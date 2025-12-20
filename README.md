@@ -35,21 +35,16 @@ RealtyOS is a full-stack (MERN) property management platform designed for luxury
 
 ## 📦 Installation & Setup
 
-### **1. Prerequisites**
+### Prerequisites**
 - Node.js installed
 - MongoDB installed (or a MongoDB Atlas connection string)
-
 
 ## Backend Setup
 cd backend
 npm install
-# Create a .env file and add:
-# PORT=5000
-# MONGO_URI=your_mongodb_connection_url
 npm start
 
-
-##Fontend Setup
+## Fontend Setup
 cd frontend
 npm install
 npm start
