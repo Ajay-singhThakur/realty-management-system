@@ -39,11 +39,6 @@ RealtyOS is a full-stack (MERN) property management platform designed for luxury
 - Node.js installed
 - MongoDB installed (or a MongoDB Atlas connection string)
 
-### **2. Clone the Repository**
-```bash
-git clone [https://github.com/your-username/realty-os.git](https://github.com/your-username/realty-os.git)
-cd realty-os
-
 
 ## Backend Setup
 cd backend
