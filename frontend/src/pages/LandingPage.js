@@ -4,7 +4,9 @@ import './Landing.css';
 
 export default function LandingPage() {
     // 1. Set your base URL here so it's easy to change later
-    const BASE_URL = "https://realty-management-system0101.onrender.com";
+    const API_BASE_URL = window.location.hostname === "localhost" 
+        ? "http://localhost:5000" 
+        : "https://realty-management-system0101.onrender.com";
     const [projects, setProjects] = useState([]);
     const [clients, setClients] = useState([]);
     const [contact, setContact] = useState({ fullName: '', email: '', mobile: '', city: '' });
@@ -14,16 +16,34 @@ export default function LandingPage() {
         const fetchContent = async () => {
             try {
                 // Use the BASE_URL here
-                const pRes = await axios.get(`${BASE_URL}/api/projects`);
-                const cRes = await axios.get(`${BASE_URL}/api/clients`);
+                const pRes = await axios.get(`${API_BASE_URL}/api/projects`);
+                const cRes = await axios.get(`${API_BASE_URL}/api/clients`);
                 setProjects(pRes.data);
                 setClients(cRes.data);
+                console.log("Data loaded successfully:", res.data);
             } catch (err) {
                 console.error("Error fetching data from Render:", err);
             }
         };
         fetchContent();
     }, []);
+    const handleContact = async (e) => {
+        e.preventDefault();
+        try {
+            await axios.post(`${API_BASE_URL}/api/contact`, contact);
+            alert("Inquiry Sent Successfully!");
+            setContact({ fullName: '', email: '', mobile: '', city: '' });
+        } catch (err) { alert("Error sending inquiry."); }
+    };
+
+    const handleSubscribe = async (e) => {
+        e.preventDefault();
+        try {
+            await axios.post(`${API_BASE_URL}/api/subscribe`, { email: subEmail });
+            alert("Subscribed to Newsletter!");
+            setSubEmail('');
+        } catch (err) { alert("Subscription failed."); }
+    };
 /*
     useEffect(() => {
         const fetchContent = async () => {
@@ -50,23 +70,7 @@ export default function LandingPage() {
         setSubEmail('');
     };
 */
-const handleContact = async (e) => {
-        e.preventDefault();
-        try {
-            await axios.post(`${API_BASE_URL}/api/contact`, contact);
-            alert("Inquiry Sent Successfully!");
-            setContact({ fullName: '', email: '', mobile: '', city: '' });
-        } catch (err) { alert("Error sending inquiry."); }
-    };
 
-    const handleSubscribe = async (e) => {
-        e.preventDefault();
-        try {
-            await axios.post(`${API_BASE_URL}/api/subscribe`, { email: subEmail });
-            alert("Subscribed to Newsletter!");
-            setSubEmail('');
-        } catch (err) { alert("Subscription failed."); }
-    };
     return (
         <div className="lp-root">
             {/* NAVIGATION */}
