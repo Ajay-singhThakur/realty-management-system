@@ -3,11 +3,28 @@ import axios from 'axios';
 import './Landing.css';
 
 export default function LandingPage() {
+    // 1. Set your base URL here so it's easy to change later
+    const BASE_URL = "https://realty-management-system0101.onrender.com";
     const [projects, setProjects] = useState([]);
     const [clients, setClients] = useState([]);
     const [contact, setContact] = useState({ fullName: '', email: '', mobile: '', city: '' });
     const [subEmail, setSubEmail] = useState('');
 
+    useEffect(() => {
+        const fetchContent = async () => {
+            try {
+                // Use the BASE_URL here
+                const pRes = await axios.get(`${BASE_URL}/api/projects`);
+                const cRes = await axios.get(`${BASE_URL}/api/clients`);
+                setProjects(pRes.data);
+                setClients(cRes.data);
+            } catch (err) {
+                console.error("Error fetching data from Render:", err);
+            }
+        };
+        fetchContent();
+    }, []);
+/*
     useEffect(() => {
         const fetchContent = async () => {
             const pRes = await axios.get('http://localhost:5000/api/projects');
@@ -17,7 +34,8 @@ export default function LandingPage() {
         };
         fetchContent();
     }, []);
-
+*/
+/*
     const handleContact = async (e) => {
         e.preventDefault();
         await axios.post('http://localhost:5000/api/contact', contact);
@@ -31,7 +49,24 @@ export default function LandingPage() {
         alert("Subscribed to Newsletter!");
         setSubEmail('');
     };
+*/
+const handleContact = async (e) => {
+        e.preventDefault();
+        try {
+            await axios.post(`${API_BASE_URL}/api/contact`, contact);
+            alert("Inquiry Sent Successfully!");
+            setContact({ fullName: '', email: '', mobile: '', city: '' });
+        } catch (err) { alert("Error sending inquiry."); }
+    };
 
+    const handleSubscribe = async (e) => {
+        e.preventDefault();
+        try {
+            await axios.post(`${API_BASE_URL}/api/subscribe`, { email: subEmail });
+            alert("Subscribed to Newsletter!");
+            setSubEmail('');
+        } catch (err) { alert("Subscription failed."); }
+    };
     return (
         <div className="lp-root">
             {/* NAVIGATION */}
@@ -75,7 +110,8 @@ export default function LandingPage() {
                     {projects.map(p => (
                         <div className="lp-project-card" key={p._id}>
                             <div className="lp-p-img">
-                                <img src={`http://localhost:5000/uploads/${p.image}`} alt={p.name} />
+                               {/* <img src={`http://localhost:5000/uploads/${p.image}`} alt={p.name} /> */}
+                               <img src={`${API_BASE_URL}/uploads/${p.image}`} alt={p.name} />
                                 <div className="lp-p-badge">Featured</div>
                             </div>
                             <div className="lp-p-info">
@@ -106,7 +142,8 @@ export default function LandingPage() {
                 <p className="lp-testimonial-content">{c.description}</p>
                 <div className="lp-client-profile">
                     <div className="lp-avatar-wrapper">
-                        <img src={`http://localhost:5000/uploads/${c.image}`} alt={c.name} />
+                        {/* <img src={`http://localhost:5000/uploads/${c.image}`} alt={c.name} /> */}
+                        <img src={`${API_BASE_URL}/uploads/${c.image}`} alt={c.name} /> 
                     </div>
                     <div className="lp-client-info">
                         <h4>{c.name}</h4>

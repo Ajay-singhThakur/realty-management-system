@@ -2,9 +2,18 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 
+/*
 export default function AdminPanel() {
   const [view, setView] = useState("dashboard");
   // Safety: Initialize with empty arrays to prevent .length crashes
+  */
+ export default function AdminPanel() {
+    const API_BASE_URL = window.location.hostname === "localhost" 
+        ? "http://localhost:5000" 
+        : "https://realty-management-system0101.onrender.com";
+        const [view, setView] = useState("dashboard");
+
+
   const [data, setData] = useState({
     projects: [],
     clients: [],
@@ -24,7 +33,8 @@ export default function AdminPanel() {
 
   const fetchData = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/admin/data");
+      // const res = await axios.get("http://localhost:5000/api/admin/data");
+      const res = await axios.get(`${API_BASE_URL}/api/admin/data`);
       // Ensure fallback to empty arrays if backend returns null
       setData(res.data || { projects: [], clients: [], leads: [], subs: [] });
     } catch (err) {
@@ -40,7 +50,9 @@ export default function AdminPanel() {
     });
 
     try {
-        await axios.post(`http://localhost:5000/api/${type}`, fd);
+        // await axios.post(`http://localhost:5000/api/${type}`, fd);
+        await axios.post(`${API_BASE_URL}/api/${type}`, fd);
+
         alert("Published Successfully!");
         
         // --- THE FIX: Refresh data immediately ---

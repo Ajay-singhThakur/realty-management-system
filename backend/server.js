@@ -76,7 +76,9 @@ const processAndSaveImage = async (buffer, prefix) => {
 };
 
 // --- API ROUTES ---
-
+app.get('/', (req, res) => {
+  res.send('RealtyOS Backend API is running...');
+});
 // 1. PROJECT MANAGEMENT
 app.get('/api/projects', async (req, res) => {
     const projects = await Project.find().sort({ _id: -1 });
