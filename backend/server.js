@@ -6,6 +6,8 @@ const sharp = require('sharp'); // Required for Bonus Image Cropping
 const path = require('path');
 const fs = require('fs');
 require('dotenv').config();
+const dotenv = require('dotenv');
+dotenv.config();
 
 const app = express();
 
