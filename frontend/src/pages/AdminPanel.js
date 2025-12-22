@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 /*
 export default function AdminPanel() {
   const [view, setView] = useState("dashboard");
   // Safety: Initialize with empty arrays to prevent .length crashes
   */
- export default function AdminPanel() {
-    const API_BASE_URL = window.location.hostname === "localhost" 
-        ? "http://localhost:5000" 
-        : "https://realty-management-system0101.onrender.com";
-        const [view, setView] = useState("dashboard");
+export default function AdminPanel() {
+  const navigate = useNavigate();
+  const API_BASE_URL =
+    window.location.hostname === "localhost"
+      ? "http://localhost:5000"
+      : "https://realty-management-system0101.onrender.com";
+  const [view, setView] = useState("dashboard");
 
 
   const [data, setData] = useState({
@@ -41,32 +43,35 @@ export default function AdminPanel() {
       console.error("Fetch error", err);
     }
   };
+  // SECURE LOGOUT LOGIC
+    const handleLogout = () => {
+        localStorage.removeItem('isAdmin'); // Clears the security token
+        navigate('/'); // Sends you back to login
+        window.location.reload();
+    };
 
- const handleUpload = async (e, type) => {
+  const handleUpload = async (e, type) => {
     e.preventDefault();
     const fd = new FormData();
-    Object.keys(form).forEach(key => {
-        if (form[key]) fd.append(key, form[key]);
+    Object.keys(form).forEach((key) => {
+      if (form[key]) fd.append(key, form[key]);
     });
 
     try {
-        // await axios.post(`http://localhost:5000/api/${type}`, fd);
-        await axios.post(`${API_BASE_URL}/api/${type}`, fd);
-
-        alert("Published Successfully!");
-        
-        // --- THE FIX: Refresh data immediately ---
-        await fetchData(); 
-        setView("dashboard");
-        // Clear the form for the next entry
-        setForm({ name: '', description: '', designation: '', image: null });
-        const fileInput = document.querySelector('input[type="file"]');
-        if (fileInput) fileInput.value = "";
-        
+      // await axios.post(`http://localhost:5000/api/${type}`, fd);
+      await axios.post(`${API_BASE_URL}/api/${type}`, fd);
+      alert("Published Successfully!");
+      // --- THE FIX: Refresh data immediately ---
+      await fetchData();
+      setView("dashboard");
+      // Clear the form for the next entry
+      setForm({ name: "", description: "", designation: "", image: null });
+      const fileInput = document.querySelector('input[type="file"]');
+      if (fileInput) fileInput.value = "";
     } catch (err) {
-        console.error("Upload failed", err);
+      console.error("Upload failed", err);
     }
-};
+  };
 
   return (
     <div className="admin-root">
@@ -100,10 +105,14 @@ export default function AdminPanel() {
             📩 Leads
           </button>
         </nav>
-        <Link to="/" className="nav-home">
-          🏠 Back to Home
-        </Link>
-      </aside>
+        
+        <div className="side-nav-footer">
+                    <Link to="/" className="nav-home">🏠 Back to Home</Link>
+                    <button className="logout-btn-sleek" onClick={handleLogout}>
+                        🚪 Secure Exit
+                    </button>
+                </div>
+            </aside>
 
       <main className="main-view">
         {/* --- DASHBOARD SECTION --- */}
@@ -115,7 +124,7 @@ export default function AdminPanel() {
                 <p>Real-time data synchronization active</p>
               </div>
               <button className="sync-btn-sleek" onClick={fetchData}>
-                🔄 
+                🔄
               </button>
             </div>
 
@@ -155,23 +164,22 @@ export default function AdminPanel() {
               </div>
 
               {/* SUBSCRIBERS TILE */}
-             <div 
-          className="glass-tile-sleek green-glow" 
-          onClick={() => setView("subscribers")} 
-          style={{ cursor: 'pointer' }}
-      >
-          <div className="tile-header-sleek">
-              <div className="tile-icon-box-sleek">🔔</div>
-              <span className="trend-tag-sleek">Live</span>
-          </div>
-          <div className="tile-content-sleek">
-              <h3>{data.subs?.length || 0}</h3>
-              <p>Subscribers</p>
-          </div>
-          <div className="tile-footer-sleek">View List →</div>
-      </div>
-
-    </div>
+              <div
+                className="glass-tile-sleek green-glow"
+                onClick={() => setView("subscribers")}
+                style={{ cursor: "pointer" }}
+              >
+                <div className="tile-header-sleek">
+                  <div className="tile-icon-box-sleek">🔔</div>
+                  <span className="trend-tag-sleek">Live</span>
+                </div>
+                <div className="tile-content-sleek">
+                  <h3>{data.subs?.length || 0}</h3>
+                  <p>Subscribers</p>
+                </div>
+                <div className="tile-footer-sleek">View List →</div>
+              </div>
+            </div>
 
             {/* QUICK ACTIONS SECTION */}
             <div className="quick-actions-card-sleek">
@@ -198,55 +206,75 @@ export default function AdminPanel() {
         )}
 
         {/* SUBSCRIBER VIEW */}
-{view === "subscribers" && (
-  <div className="admin-view-container animate-fade">
-    <div className="view-header-sleek">
-      <div>
-        <h2>Audience Intelligence</h2>
-        <p>You have {data.subs?.length || 0} premium subscribers synced.</p>
-      </div>
-      
-    </div>
+        {view === "subscribers" && (
+          <div className="admin-view-container animate-fade">
+            <div className="view-header-sleek">
+              <div>
+                <h2>Audience Intelligence</h2>
+                <p>
+                  You have {data.subs?.length || 0} premium subscribers synced.
+                </p>
+              </div>
+            </div>
 
-    <div className="table-card-sleek">
-      <table className="modern-table">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Email Identity</th>
-            <th>Subscription Date</th>
-            <th>Status</th>
-            <th>Quick Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.subs?.length > 0 ? (
-            data.subs.map((s, index) => (
-              <tr key={s._id}>
-                <td>{index + 1}</td>
-                <td className="email-primary">{s.email}</td>
-                {/* FIX: Using a fallback if date is missing */}
-                <td>{s.createdAt ? new Date(s.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : 'Pending Sync'}</td>
-                <td><span className="badge-glow-green">Verified</span></td>
-                <td>
-                  <button className="mini-action-btn" onClick={() => navigator.clipboard.writeText(s.email)}>
-                    Copy Email
-                  </button>
-                </td>
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan="5" className="empty-table">No subscribers in the database yet.</td>
-            </tr>
-          )}
-        </tbody>
-      </table>
-    </div>
-  </div>
-)}
+            <div className="table-card-sleek">
+              <table className="modern-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Email Identity</th>
+                    <th>Subscription Date</th>
+                    <th>Status</th>
+                    <th>Quick Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.subs?.length > 0 ? (
+                    data.subs.map((s, index) => (
+                      <tr key={s._id}>
+                        <td>{index + 1}</td>
+                        <td className="email-primary">{s.email}</td>
+                        {/* FIX: Using a fallback if date is missing */}
+                        <td>
+                          {s.createdAt
+                            ? new Date(s.createdAt).toLocaleDateString(
+                                "en-GB",
+                                {
+                                  day: "2-digit",
+                                  month: "short",
+                                  year: "numeric",
+                                }
+                              )
+                            : "Pending Sync"}
+                        </td>
+                        <td>
+                          <span className="badge-glow-green">Verified</span>
+                        </td>
+                        <td>
+                          <button
+                            className="mini-action-btn"
+                            onClick={() =>
+                              navigator.clipboard.writeText(s.email)
+                            }
+                          >
+                            Copy Email
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="5" className="empty-table">
+                        No subscribers in the database yet.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
         {/* --- EDITOR SECTION --- */}
-
 
         {view === "add-project" && (
           <div className="project-editor-container animate-fade">
@@ -507,7 +535,7 @@ export default function AdminPanel() {
             </div>
           </div>
         )}
-        
+
         {/* --- LEADS SECTION --- */}
         {view === "leads" && (
           <div className="table-container animate-fade">
@@ -546,6 +574,5 @@ export default function AdminPanel() {
         )}
       </main>
     </div>
-    
   );
 }

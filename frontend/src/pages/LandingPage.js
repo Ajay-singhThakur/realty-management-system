@@ -89,8 +89,8 @@ export default function LandingPage() {
             <header id="home" className="lp-hero">
                 <div className="lp-hero-text">
                     <span className="lp-tag">Premium Real Estate</span>
-                    <h1>Not Your Average <span>Realtor</span></h1>
-                    <p>Experience architectural excellence and luxury living with RealtyOS.</p>
+                    <h1>Find Your perfect <span>HOME</span></h1>
+                    <p>Discover luxury living with the city's most trusted realty partner with RealtyOS.</p>
                     <div className="lp-hero-btns">
                         <a href="#projects" className="lp-btn-primary">View Portfolio</a>
                         <a href="#contact" className="lp-btn-outline">Free Consultation</a>
