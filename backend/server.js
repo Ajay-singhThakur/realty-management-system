@@ -7,6 +7,8 @@ const path = require('path');
 const fs = require('fs');
 require('dotenv').config();
 const dotenv = require('dotenv');
+const jwt = require('jsonwebtoken');
+
 dotenv.config();
 
 const app = express();
@@ -15,6 +17,21 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+const ADMIN_USERNAME = "admin"; 
+const ADMIN_PASSWORD = "Thakurajay135"; // Change this!
+
+app.post('/api/login', (req, res) => {
+    const { username, password } = req.body;
+    
+    if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+        // Just send a success message
+        return res.json({ success: true, user: "admin" });
+    }
+    
+    res.status(401).json({ success: false, message: "Invalid Credentials" });
+});
+
 
 // Ensure Uploads Directory Exists
 const uploadDir = path.join(__dirname, 'uploads');
@@ -79,6 +96,9 @@ const processAndSaveImage = async (buffer, prefix) => {
 app.get('/', (req, res) => {
   res.send('RealtyOS Backend API is running...');
 });
+
+
+
 // 1. PROJECT MANAGEMENT
 app.get('/api/projects', async (req, res) => {
     const projects = await Project.find().sort({ _id: -1 });
