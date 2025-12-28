@@ -33,5 +33,5 @@ module.exports = {
     Project: mongoose.model('Project', ProjectSchema),
     Client: mongoose.model('Client', ClientSchema),
     Lead: mongoose.model('Lead', LeadSchema),
-    Subscriber: mongoose.model('Subscriber', SubscriberSchema)
+    Subscriber: mongoose.model('Subscriber', subscriberSchema)
 };
